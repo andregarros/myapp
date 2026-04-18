@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { api } from "../api/client";
 import { ProductForm } from "../components/ProductForm";
 import { useAuth } from "../contexts/AuthContext";
@@ -10,37 +10,40 @@ export function ProductsPage() {
   const [status, setStatus] = useState("");
   const [editingProduct, setEditingProduct] = useState(null);
 
-  async function handleSave(values, file) {
-    let imageUrl = values.imageUrl;
+  const handleSave = useCallback(
+    async (values, file) => {
+      let imageUrl = values.imageUrl;
 
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-      const upload = await api("/products/upload", {
-        method: "POST",
-        token,
-        body: formData,
-      });
-      imageUrl = upload.imageUrl;
-    }
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
+        const upload = await api("/products/upload", {
+          method: "POST",
+          token,
+          body: formData,
+        });
+        imageUrl = upload.imageUrl;
+      }
 
-    const payload = {
-      ...values,
-      imageUrl,
-      price: Number(values.price),
-      stock: Number(values.stock),
-    };
+      const payload = {
+        ...values,
+        imageUrl,
+        price: Number(values.price),
+        stock: Number(values.stock),
+      };
 
-    if (editingProduct) {
-      const updated = await api(`/products/${editingProduct.id}`, {
-        method: "PUT",
-        token,
-        body: payload,
-      });
-      setData((current) => current.map((product) => (product.id === updated.id ? updated : product)));
-      setEditingProduct(null);
-      setStatus("Produto atualizado com sucesso.");
-    } else {
+      if (editingProduct) {
+        const updated = await api(`/products/${editingProduct.id}`, {
+          method: "PUT",
+          token,
+          body: payload,
+        });
+        setData((current) => current.map((product) => (product.id === updated.id ? updated : product)));
+        setEditingProduct(null);
+        setStatus("Produto atualizado com sucesso.");
+        return;
+      }
+
       const created = await api("/products", {
         method: "POST",
         token,
@@ -48,8 +51,9 @@ export function ProductsPage() {
       });
       setData((current) => [created, ...(current || [])]);
       setStatus("Produto cadastrado com sucesso.");
-    }
-  }
+    },
+    [editingProduct, setData, token]
+  );
 
   async function removeProduct(id) {
     await api(`/products/${id}`, {
@@ -76,7 +80,7 @@ export function ProductsPage() {
         <div className="products-grid">
           {data.map((product) => (
             <article className="product-card" key={product.id}>
-              <img src={product.imageUrl || "https://via.placeholder.com/300x200"} alt={product.name} />
+              <img src={product.imageUrl || "https://via.placeholder.com/300x200"} alt={product.name} loading="lazy" />
               <div>
                 <h4>{product.name}</h4>
                 <p>{product.description}</p>

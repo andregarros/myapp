@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "npm --workspace web run build",
+    "start": "npm --workspace backend run start",
     "dev:backend": "npm --workspace backend run dev",
     "dev:web": "npm --workspace web run dev",
     "dev:mobile": "npm --workspace mobile run start",

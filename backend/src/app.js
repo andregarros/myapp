@@ -1,6 +1,8 @@
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import path from "path";
+import { fileURLToPath } from "url";
 import { env } from "./config/env.js";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
@@ -15,6 +17,9 @@ import { errorHandler } from "./middleware/errorMiddleware.js";
 import { requireActiveSubscription } from "./middleware/subscriptionMiddleware.js";
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distDir = path.resolve(__dirname, "../../dist");
 
 app.use(helmet());
 app.use(
@@ -43,6 +48,17 @@ app.use("/api/cart", requireAuth, requireActiveSubscription, cartRoutes);
 app.use("/api/history", requireAuth, requireActiveSubscription, historyRoutes);
 app.use("/api/notifications", requireAuth, requireActiveSubscription, notificationRoutes);
 app.use("/api/sync", requireAuth, requireActiveSubscription, syncRoutes);
+
+app.use(express.static(distDir));
+
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api") || req.path === "/health") {
+    next();
+    return;
+  }
+
+  res.sendFile(path.join(distDir, "index.html"));
+});
 
 app.use(errorHandler);
 

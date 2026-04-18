@@ -13,6 +13,7 @@ const initialState = {
 export function ProductForm({ onSave, initialValues }) {
   const [form, setForm] = useState(initialValues || initialState);
   const [file, setFile] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     setForm(initialValues || initialState);
@@ -26,11 +27,17 @@ export function ProductForm({ onSave, initialValues }) {
   return (
     <form
       className="card form-grid"
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault();
-        onSave(form, file);
-        setForm(initialState);
-        setFile(null);
+        setSaving(true);
+
+        try {
+          await onSave(form, file);
+          setForm(initialState);
+          setFile(null);
+        } finally {
+          setSaving(false);
+        }
       }}
     >
       <div className="section-header">
@@ -77,8 +84,8 @@ export function ProductForm({ onSave, initialValues }) {
         <textarea rows="4" value={form.description} onChange={(e) => handleChange("description", e.target.value)} />
       </label>
 
-      <button className="primary-button" type="submit">
-        Salvar produto
+      <button className="primary-button" type="submit" disabled={saving}>
+        {saving ? "Salvando..." : "Salvar produto"}
       </button>
     </form>
   );

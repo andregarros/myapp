@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -8,7 +9,7 @@ const links = [
   { to: "/notifications", label: "Alertas" },
 ];
 
-export function Layout({ children }) {
+function LayoutComponent({ children }) {
   const { user, company, logout } = useAuth();
 
   return (
@@ -30,7 +31,7 @@ export function Layout({ children }) {
         <div className="user-card">
           <div>
             <strong>{user?.name}</strong>
-            <p>{company?.name} · {user?.role}</p>
+            <p>{company?.name} - {user?.role}</p>
           </div>
           <button className="secondary-button" onClick={logout}>
             Sair
@@ -42,3 +43,5 @@ export function Layout({ children }) {
     </div>
   );
 }
+
+export const Layout = memo(LayoutComponent);

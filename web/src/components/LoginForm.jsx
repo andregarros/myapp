@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 export function LoginForm() {
   const { login, register } = useAuth();
   const [isRegister, setIsRegister] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
@@ -15,6 +16,7 @@ export function LoginForm() {
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
+    setSubmitting(true);
 
     try {
       if (isRegister) {
@@ -24,6 +26,8 @@ export function LoginForm() {
       }
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -32,9 +36,7 @@ export function LoginForm() {
       <div className="auth-card">
         <p className="eyebrow">Varejo inteligente</p>
         <h1>Controle seu mercado em tempo real</h1>
-        <p className="muted">
-          Scanner, estoque, vendas, historico e operacao multiempresa em uma unica plataforma.
-        </p>
+        <p className="muted">Scanner, estoque, vendas, historico e operacao multiempresa em uma unica plataforma.</p>
 
         <form className="form-grid" onSubmit={handleSubmit}>
           {isRegister && (
@@ -57,6 +59,7 @@ export function LoginForm() {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
+              autoComplete="email"
             />
           </label>
 
@@ -66,17 +69,18 @@ export function LoginForm() {
               type="password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
+              autoComplete={isRegister ? "new-password" : "current-password"}
             />
           </label>
 
           {error ? <div className="error-banner">{error}</div> : null}
 
-          <button className="primary-button" type="submit">
-            {isRegister ? "Criar conta" : "Entrar"}
+          <button className="primary-button" type="submit" disabled={submitting}>
+            {submitting ? "Enviando..." : isRegister ? "Criar conta" : "Entrar"}
           </button>
         </form>
 
-      <button className="text-button" onClick={() => setIsRegister((value) => !value)}>
+        <button className="text-button" type="button" onClick={() => setIsRegister((value) => !value)}>
           {isRegister ? "Ja tenho conta" : "Criar empresa e admin"}
         </button>
       </div>

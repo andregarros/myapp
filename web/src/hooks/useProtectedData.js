@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../api/client";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -8,29 +8,47 @@ export function useProtectedData(path) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+  const load = useCallback(
+    async (signal) => {
+      if (!token) {
+        setData(null);
+        setError("");
+        setLoading(false);
+        return;
+      }
 
-    let active = true;
+      setLoading(true);
+      setError("");
 
-    api(path, { token })
-      .then((payload) => {
-        if (active) {
-          setData(payload);
-          setError("");
+      try {
+        const payload = await api(path, { token, signal });
+        setData(payload);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError(err.message);
         }
-      })
-      .catch((err) => active && setError(err.message))
-      .finally(() => active && setLoading(false));
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
+      }
+    },
+    [path, token]
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+    load(controller.signal);
 
     return () => {
-      active = false;
+      controller.abort();
     };
-  }, [path, token]);
+  }, [load]);
 
-  return { data, setData, loading, error };
+  const refresh = useCallback(() => {
+    const controller = new AbortController();
+    load(controller.signal);
+  }, [load]);
+
+  return { data, setData, loading, error, refresh };
 }
-

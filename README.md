@@ -72,4 +72,16 @@ senao:
 - Opcionalmente defina `ALLOWED_ORIGINS` e `WEB_URL` se quiser restringir CORS manualmente.
 - O frontend usa `/api` por padrao e o arquivo `vercel.json` faz o rewrite das rotas SPA para `index.html`.
 - Em ambiente Vercel o backend usa armazenamento em memoria para demo. Os dados podem reiniciar entre execucoes, entao para persistencia real o ideal e conectar um banco.
+
+## Deploy no Render
+
+- Este repositorio agora inclui [`render.yaml`](C:/Users/Administrator/Desktop/myapp/render.yaml) para publicar pela raiz como um unico servico Node.
+- O Render deve executar:
+  `Build Command`: `npm install && npm run build`
+  `Start Command`: `npm run start`
+- O frontend Vite e gerado em `dist/` e o backend Express passa a servir esses arquivos em producao.
+- O endpoint de health check e `/health`.
+- Defina `JWT_SECRET` no Render. Se usar o blueprint, ele e gerado automaticamente.
+- Nao publique o diretório `mobile` ou `my-app` como Web Service no Render, porque ambos usam Expo e possuem `main: expo-router/entry`.
+- Para corrigir o erro `Cannot find module '/opt/render/project/src/expo-router/entry'`, recrie o servico usando a raiz do repositorio com o `render.yaml`, ou ajuste manualmente o Root Directory para `.` e os comandos acima.
 # myappmercado

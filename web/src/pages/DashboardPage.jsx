@@ -1,33 +1,44 @@
+import { useMemo, useState } from "react";
 import { api } from "../api/client";
 import { useAuth } from "../contexts/AuthContext";
 import { useProtectedData } from "../hooks/useProtectedData";
 
 export function DashboardPage() {
   const { token, user, updateSession } = useAuth();
+  const [renewing, setRenewing] = useState(false);
   const { data, loading, error, setData } = useProtectedData("/dashboard");
 
   async function renewSubscription() {
-    const subscription = await api("/subscription/renew", {
-      method: "POST",
-      token,
-    });
+    setRenewing(true);
 
-    setData((current) => ({
-      ...current,
-      subscription,
-    }));
-    updateSession({ subscription });
+    try {
+      const subscription = await api("/subscription/renew", {
+        method: "POST",
+        token,
+      });
+
+      setData((current) => ({
+        ...current,
+        subscription,
+      }));
+      updateSession({ subscription });
+    } finally {
+      setRenewing(false);
+    }
   }
 
   if (loading) return <p>Carregando dashboard...</p>;
   if (error) return <p>{error}</p>;
 
-  const metrics = [
-    { label: "Produtos", value: data.metrics.totalProducts },
-    { label: "Vendas", value: `R$ ${data.metrics.totalSales}` },
-    { label: "Estoque baixo", value: data.metrics.lowStock },
-    { label: "Scans hoje", value: data.metrics.scansToday },
-  ];
+  const metrics = useMemo(
+    () => [
+      { label: "Produtos", value: data.metrics.totalProducts },
+      { label: "Vendas", value: `R$ ${data.metrics.totalSales}` },
+      { label: "Estoque baixo", value: data.metrics.lowStock },
+      { label: "Scans hoje", value: data.metrics.scansToday },
+    ],
+    [data.metrics]
+  );
 
   return (
     <div className="page-grid">
@@ -38,12 +49,12 @@ export function DashboardPage() {
         </div>
         <div>
           <p className="muted">
-            Assinatura {data.subscription.plan} · status {data.subscription.status} · renova em{" "}
+            Assinatura {data.subscription.plan} - status {data.subscription.status} - renova em{" "}
             {new Date(data.subscription.renewAt).toLocaleDateString("pt-BR")}
           </p>
           {user?.role === "admin" && (
-            <button className="secondary-button" onClick={renewSubscription}>
-              Renovar assinatura
+            <button className="secondary-button" onClick={renewSubscription} disabled={renewing}>
+              {renewing ? "Renovando..." : "Renovar assinatura"}
             </button>
           )}
         </div>
