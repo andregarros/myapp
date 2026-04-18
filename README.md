@@ -86,3 +86,4 @@ senao:
 - Para corrigir o erro `Cannot find module '/opt/render/project/src/expo-router/entry'`, recrie o servico usando a raiz do repositorio com o `render.yaml`, ou ajuste manualmente o Root Directory para `.` e os comandos acima.
 # myappmercado
 # my-app
+# myapp
