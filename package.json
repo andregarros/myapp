@@ -8,10 +8,10 @@
     "mobile"
   ],
   "scripts": {
+    "build": "npm --workspace web run build",
     "dev:backend": "npm --workspace backend run dev",
     "dev:web": "npm --workspace web run dev",
     "dev:mobile": "npm --workspace mobile run start",
     "dev": "npm run dev:backend"
   }
 }
-

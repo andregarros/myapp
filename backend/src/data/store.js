@@ -1,14 +1,33 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { env } from "../config/env.js";
 import { seedData } from "./seed.js";
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = path.resolve(currentDir, "..", "..", "data");
 const dbFile = path.join(dataDir, "db.json");
+const memoryStoreKey = "__SMART_MARKET_MEMORY_DB__";
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function getMemoryDb() {
+  if (!globalThis[memoryStoreKey]) {
+    globalThis[memoryStoreKey] = clone(seedData);
+  }
+
+  return globalThis[memoryStoreKey];
+}
 
 class DataStore {
   constructor() {
+    if (env.dataStoreMode === "memory") {
+      this.ensureMemoryShape();
+      return;
+    }
+
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
@@ -21,11 +40,20 @@ class DataStore {
   }
 
   read() {
+    if (env.dataStoreMode === "memory") {
+      return this.normalize(clone(getMemoryDb()));
+    }
+
     const db = JSON.parse(fs.readFileSync(dbFile, "utf-8"));
     return this.normalize(db);
   }
 
   write(data) {
+    if (env.dataStoreMode === "memory") {
+      globalThis[memoryStoreKey] = this.normalize(clone(data));
+      return globalThis[memoryStoreKey];
+    }
+
     fs.writeFileSync(dbFile, JSON.stringify(data, null, 2));
     return data;
   }
@@ -43,6 +71,11 @@ class DataStore {
   }
 
   ensureShape() {
+    if (env.dataStoreMode === "memory") {
+      this.ensureMemoryShape();
+      return;
+    }
+
     const db = JSON.parse(fs.readFileSync(dbFile, "utf-8"));
     const normalized = this.normalize(db);
     if (JSON.stringify(db) !== JSON.stringify(normalized)) {
@@ -83,6 +116,10 @@ class DataStore {
     }
 
     return normalized;
+  }
+
+  ensureMemoryShape() {
+    globalThis[memoryStoreKey] = this.normalize(clone(getMemoryDb()));
   }
 }
 

@@ -28,12 +28,12 @@ export function create(req, res, next) {
 
 export function upload(req, res, next) {
   try {
-    if (!req.file) {
+    if (!req.file?.buffer) {
       throw new Error("Arquivo nao enviado.");
     }
 
     res.status(201).json({
-      imageUrl: `http://localhost:4000/uploads/${req.file.filename}`,
+      imageUrl: `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
     });
   } catch (error) {
     next(error);

@@ -62,3 +62,13 @@ senao:
 - A API usa um repositorio em JSON para demo local e um schema MySQL pronto para migracao.
 - A integracao externa de codigo de barras usa Open Food Facts como fallback quando o produto nao existir localmente.
 - O design foi pensado para multiempresa por `companyId`.
+
+## Deploy do web no Vercel
+
+- O repositorio agora pode ser publicado na raiz tambem, com frontend e API juntos no Vercel.
+- Use `Build Command` = `npm run build`.
+- Use `Output Directory` = `dist`.
+- Crie a variavel `JWT_SECRET` no Vercel.
+- Opcionalmente defina `ALLOWED_ORIGINS` e `WEB_URL` se quiser restringir CORS manualmente.
+- O frontend usa `/api` por padrao e o arquivo `vercel.json` faz o rewrite das rotas SPA para `index.html`.
+- Em ambiente Vercel o backend usa armazenamento em memoria para demo. Os dados podem reiniciar entre execucoes, entao para persistencia real o ideal e conectar um banco.

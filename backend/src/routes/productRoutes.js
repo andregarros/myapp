@@ -1,24 +1,13 @@
 import { Router } from "express";
 import multer from "multer";
-import path from "path";
-import { fileURLToPath } from "url";
 import * as productController from "../controllers/productController.js";
 import { requireRole } from "../middleware/authMiddleware.js";
 import { requireFields, validateProductPayload } from "../middleware/validateMiddleware.js";
 import { ApiError } from "../utils/errors.js";
 
 const router = Router();
-const currentDir = path.dirname(fileURLToPath(import.meta.url));
-const uploadDir = path.resolve(currentDir, "..", "..", "uploads");
-const storage = multer.diskStorage({
-  destination: uploadDir,
-  filename: (_req, file, cb) => {
-    const safeName = path.basename(file.originalname).replace(/[^a-zA-Z0-9._-]/g, "-");
-    cb(null, `${Date.now()}-${safeName}`);
-  },
-});
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 2 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.mimetype)) {
