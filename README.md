@@ -72,3 +72,4 @@ senao:
 - Opcionalmente defina `ALLOWED_ORIGINS` e `WEB_URL` se quiser restringir CORS manualmente.
 - O frontend usa `/api` por padrao e o arquivo `vercel.json` faz o rewrite das rotas SPA para `index.html`.
 - Em ambiente Vercel o backend usa armazenamento em memoria para demo. Os dados podem reiniciar entre execucoes, entao para persistencia real o ideal e conectar um banco.
+# myappmercado
