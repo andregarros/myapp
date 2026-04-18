@@ -1,0 +1,17 @@
+{
+  "name": "smart-market-suite",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "backend",
+    "web",
+    "mobile"
+  ],
+  "scripts": {
+    "dev:backend": "npm --workspace backend run dev",
+    "dev:web": "npm --workspace web run dev",
+    "dev:mobile": "npm --workspace mobile run start",
+    "dev": "npm run dev:backend"
+  }
+}
+

@@ -1,0 +1,64 @@
+# Smart Market Suite
+
+Sistema completo para leitura de codigo de barras com API, painel web e aplicativo mobile.
+
+## Estrutura
+
+- `backend`: API REST com autenticacao JWT, produtos, dashboard, carrinho, historico, notificacoes e sincronizacao offline.
+- `web`: painel administrativo responsivo em React + Vite.
+- `mobile`: aplicativo Expo/React Native com scanner, carrinho, historico e suporte offline.
+- `backend/sql/schema.sql`: estrutura inicial do banco MySQL.
+- `docs/architecture.md`: visao arquitetural e decisoes de escalabilidade.
+
+## Como executar
+
+1. Instale as dependencias na raiz:
+
+```bash
+npm install
+```
+
+2. Suba o backend:
+
+```bash
+npm run dev:backend
+```
+
+3. Em outro terminal, suba o painel web:
+
+```bash
+npm run dev:web
+```
+
+4. Em outro terminal, suba o app mobile:
+
+```bash
+npm run dev:mobile
+```
+
+5. Para testar o mobile em aparelho fisico, troque `http://localhost:4000/api` pelo IP local da maquina em `mobile/src/api/client.js`.
+
+## Credenciais iniciais
+
+- Admin: `admin@smartmarket.com` / `Admin@123`
+- Funcionario: `staff@smartmarket.com` / `Staff@123`
+- Cliente: `customer@smartmarket.com` / `Client@123`
+
+## Fluxo de camera no app
+
+Ao abrir a tela principal de scanner:
+
+```txt
+se permissao ja foi concedida:
+  abre a camera automaticamente
+senao:
+  solicita permissao
+  se usuario aceitar:
+    abre a camera
+```
+
+## Observacoes
+
+- A API usa um repositorio em JSON para demo local e um schema MySQL pronto para migracao.
+- A integracao externa de codigo de barras usa Open Food Facts como fallback quando o produto nao existir localmente.
+- O design foi pensado para multiempresa por `companyId`.

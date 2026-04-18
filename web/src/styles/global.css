@@ -1,0 +1,275 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f7f1;
+  --panel: #ffffff;
+  --panel-alt: #eef3ea;
+  --line: #d5dfd1;
+  --text: #17301f;
+  --muted: #67806f;
+  --brand: #1f8f4e;
+  --brand-dark: #0e5f31;
+  --danger: #c64d3f;
+  font-family: "Manrope", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(96, 181, 111, 0.22), transparent 34%),
+    linear-gradient(160deg, #f8fbf5, #edf4ea 60%, #f4f7f1);
+  color: var(--text);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  background: white;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  padding: 2rem;
+  background: rgba(18, 60, 33, 0.9);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.nav {
+  display: grid;
+  gap: 0.75rem;
+  margin: 2rem 0;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-link.active {
+  background: rgba(106, 231, 151, 0.2);
+  color: white;
+}
+
+.content {
+  padding: 2rem;
+}
+
+.page-grid,
+.metrics-grid,
+.products-grid,
+.form-grid,
+.notifications-list {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.two-columns {
+  grid-template-columns: minmax(320px, 420px) 1fr;
+}
+
+.hero-banner,
+.card,
+.metric-card,
+.auth-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 28px;
+  box-shadow: 0 20px 40px rgba(27, 54, 35, 0.08);
+}
+
+.hero-banner,
+.card,
+.auth-card {
+  padding: 1.5rem;
+}
+
+.hero-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  background: linear-gradient(135deg, #143c24, #2f8f52);
+  color: white;
+}
+
+.metrics-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.metric-card {
+  padding: 1.2rem;
+}
+
+.metric-card strong {
+  font-size: 2rem;
+}
+
+.section-header,
+.table-row,
+.product-meta,
+.product-footer,
+.notification-card,
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.table-like {
+  display: grid;
+}
+
+.table-row {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.products-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.product-card {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.product-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.product-card > div {
+  padding: 1rem;
+}
+
+.product-meta,
+.product-footer {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.auth-card {
+  width: min(100%, 520px);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #8fe9ad;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.primary-button,
+.secondary-button,
+.danger-button,
+.text-button {
+  border-radius: 18px;
+  padding: 0.95rem 1.1rem;
+  font-weight: 700;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, var(--brand), #44b867);
+  color: white;
+}
+
+.secondary-button {
+  background: var(--panel-alt);
+  color: var(--text);
+}
+
+.danger-button {
+  background: rgba(198, 77, 63, 0.12);
+  color: var(--danger);
+}
+
+.text-button {
+  background: transparent;
+  color: var(--brand-dark);
+  padding-inline: 0;
+}
+
+.status-pill,
+.error-banner {
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+}
+
+.status-pill {
+  background: rgba(31, 143, 78, 0.12);
+  color: var(--brand-dark);
+}
+
+.error-banner {
+  background: rgba(198, 77, 63, 0.14);
+  color: var(--danger);
+}
+
+.notification-card {
+  padding: 1.2rem;
+  border-radius: 22px;
+  background: var(--panel-alt);
+}
+
+.notification-card.read {
+  opacity: 0.7;
+}
+
+@media (max-width: 960px) {
+  .shell,
+  .two-columns,
+  .hero-banner {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .sidebar {
+    gap: 1.5rem;
+  }
+}
