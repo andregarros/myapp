@@ -2,19 +2,36 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { api } from "../api/client";
 
 const AuthContext = createContext(null);
+const sessionStorageKey = "smartmarket:web:session";
+
+function readStoredSession() {
+  try {
+    const stored = sessionStorage.getItem(sessionStorageKey);
+    return stored ? JSON.parse(stored) : null;
+  } catch (error) {
+    console.error("Nao foi possivel ler a sessao salva:", error);
+    sessionStorage.removeItem(sessionStorageKey);
+    return null;
+  }
+}
+
+function writeStoredSession(session) {
+  try {
+    if (session) {
+      sessionStorage.setItem(sessionStorageKey, JSON.stringify(session));
+    } else {
+      sessionStorage.removeItem(sessionStorageKey);
+    }
+  } catch (error) {
+    console.error("Nao foi possivel salvar a sessao:", error);
+  }
+}
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(() => {
-    const stored = sessionStorage.getItem("smartmarket:web:session");
-    return stored ? JSON.parse(stored) : null;
-  });
+  const [session, setSession] = useState(readStoredSession);
 
   useEffect(() => {
-    if (session) {
-      sessionStorage.setItem("smartmarket:web:session", JSON.stringify(session));
-    } else {
-      sessionStorage.removeItem("smartmarket:web:session");
-    }
+    writeStoredSession(session);
   }, [session]);
 
   const login = useCallback(async (email, password) => {

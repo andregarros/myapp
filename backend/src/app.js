@@ -21,7 +21,21 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distDir = path.resolve(__dirname, "../../dist");
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        connectSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+  })
+);
 app.use(
   cors({
     origin(origin, callback) {
