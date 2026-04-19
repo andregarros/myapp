@@ -20,6 +20,16 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distDir = path.resolve(__dirname, "../../dist");
+const assetsDir = path.join(distDir, "assets");
+
+app.use(
+  "/assets",
+  express.static(assetsDir, {
+    fallthrough: false,
+    immutable: true,
+    maxAge: "1y",
+  })
+);
 
 app.use(
   helmet({
@@ -68,6 +78,12 @@ app.use(express.static(distDir));
 app.get("*", (req, res, next) => {
   if (req.path.startsWith("/api") || req.path === "/health") {
     next();
+    return;
+  }
+
+  // Real asset/file requests should not fall back to the SPA shell.
+  if (path.extname(req.path)) {
+    res.sendStatus(404);
     return;
   }
 
